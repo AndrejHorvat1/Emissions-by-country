@@ -56,7 +56,7 @@ Promise.all([
             }
         });
 
-    // Initialize the title with the default year
+
     d3.select("#currentYear").text(`Year: 2021`);
 
     // Slider event
@@ -325,11 +325,8 @@ function highlightCountry(d, data, selectedCountry, element) {
         .attr("stroke", "red")
         .attr("stroke-width", 2);
 
-    // Ovdje pozivamo funkcije za ažuriranje karte, pie charta i legende pie charta
-    // Slider event
-   
     
-    // Dodajte ovaj kod kako bi se ažuriranje karte pozvalo kada se promijeni vrijednost klizača
+    // Ažuriranje karte kada se promijeni vrijednost klizača
     d3.select("#yearSlider").on("change", function() {
         const year = +this.value;
         updateMap(year, data);
@@ -337,13 +334,10 @@ function highlightCountry(d, data, selectedCountry, element) {
         if (selectedCountry) {
             showCountryData(selectedCountry, data[selectedCountry]);
         }
-        // Ovdje dodajemo ažuriranje pie charta i legende
+        // Ažuriranje pie charta i legende
         updatePieChart(data[selectedCountry][year]?.factors || {});
     });
-    
-    
-    // Dodajte ovaj kod unutar funkcije za odabir države (gdje se postavlja selectedCountry)
-    // Pohrana trenutne godine prije odabira nove države i ponovno postavljanje vrijednosti klizača
+
     
 }
 
@@ -368,8 +362,7 @@ function createLegend() {
             .text(item.label);
     });
 
-    // Dodajte stilove kako bi se elementi prikazali jedan pored drugog
     legend.selectAll(".legend-item")
         .style("display", "inline-block")
-        .style("margin-right", "10px"); // Možete prilagoditi razmak između elemenata prema potrebi
+        .style("margin-right", "10px"); 
 }
