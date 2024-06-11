@@ -1,3 +1,4 @@
+// Set up the map dimensions and projection
 const width = 960, height = 600;
 
 const svg = d3.select("#map").append("svg")
@@ -41,7 +42,7 @@ Promise.all([
         .attr("d", path)
         .attr("fill", d => {
             const countryData = data[d.properties.name];
-            return countryData ? colorScale(countryData[2021].total) : "gray";
+            return countryData && countryData[2021] ? colorScale(countryData[2021].total) : "gray";
         })
         .attr("stroke", "#000")
         .on("click", function(event, d) {
@@ -55,11 +56,9 @@ Promise.all([
             }
         });
 
-    // Slider event
-
-    
     // Initialize the title with the default year
     d3.select("#currentYear").text(`Year: 2021`);
+
     // Slider event
     d3.select("#yearSlider").on("input", function() {
         const year = +this.value;
@@ -67,11 +66,10 @@ Promise.all([
         d3.select("#currentYear").text(`Year: ${year}`);
         if (selectedCountry) {
             showCountryData(selectedCountry, data[selectedCountry]);
+            updatePieChart(data[selectedCountry][year]?.factors || {});
         }
-
-        updatePieChart(data[selectedCountry][year].factors);
-
     });
+
     // Play button automation
     let interval;
     d3.select("#playButton").on("click", function() {
@@ -89,6 +87,7 @@ Promise.all([
                 updateMap(year, data);
                 if (selectedCountry) {
                     showCountryData(selectedCountry, data[selectedCountry]);
+                    updatePieChart(data[selectedCountry][year]?.factors || {});
                 }
             }, 1000);
         } else {
@@ -103,6 +102,7 @@ Promise.all([
             showCountryData(selectedCountry, data[selectedCountry]);
         }
     });
+
     createLegend();
 });
 
@@ -145,7 +145,7 @@ function updateMap(year, data) {
     g.selectAll("path")
         .attr("fill", d => {
             const countryData = data[d.properties.name];
-            return countryData ? colorScale(countryData[year].total) : "gray";
+            return countryData && countryData[year] ? colorScale(countryData[year].total) : "gray";
         });
 }
 
@@ -161,7 +161,6 @@ function showCountryData(country, countryData) {
 
     // Update line chart
     updateLineChart(countryData);
-
 }
 
 function updatePieChart(factors) {
@@ -181,7 +180,7 @@ function updatePieChart(factors) {
         .attr("transform", "translate(100,100)");
 
     const colors = d3.schemeCategory10;
-    
+
     g.selectAll("path")
         .data(pie)
         .enter().append("path")
@@ -306,7 +305,6 @@ function updateLineChart(countryData) {
     updateFocus(initialYear);
 }
 
-
 function highlightCountry(d, data, selectedCountry, element) {
     const [[x0, y0], [x1, y1]] = path.bounds(d);
     svg.transition().duration(750).call(
@@ -317,16 +315,21 @@ function highlightCountry(d, data, selectedCountry, element) {
             .translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
     );
 
+    // Postavljamo obrise za sve zemlje
     g.selectAll("path")
         .attr("stroke", "#000")
         .attr("stroke-width", 1);
     
-    //Zoom and red border
+    // Nakon zooma, crveni obrub za odabranu zemlju
     d3.select(element)
         .attr("stroke", "red")
         .attr("stroke-width", 2);
-    
 
+    // Ovdje pozivamo funkcije za ažuriranje karte, pie charta i legende pie charta
+    // Slider event
+   
+    
+    // Dodajte ovaj kod kako bi se ažuriranje karte pozvalo kada se promijeni vrijednost klizača
     d3.select("#yearSlider").on("change", function() {
         const year = +this.value;
         updateMap(year, data);
@@ -334,15 +337,16 @@ function highlightCountry(d, data, selectedCountry, element) {
         if (selectedCountry) {
             showCountryData(selectedCountry, data[selectedCountry]);
         }
-        updatePieChart(data[selectedCountry][year].factors);
+        // Ovdje dodajemo ažuriranje pie charta i legende
+        updatePieChart(data[selectedCountry][year]?.factors || {});
     });
     
     
+    // Dodajte ovaj kod unutar funkcije za odabir države (gdje se postavlja selectedCountry)
+    // Pohrana trenutne godine prije odabira nove države i ponovno postavljanje vrijednosti klizača
+    
 }
-let currentYear = 2021;
-function setCurrentYear() {
-    currentYear = +d3.select("#yearSlider").property("value");
-}
+
 function createLegend() {
     const legendData = [
         { color: "#ffe6e6", label: "0-500" },
@@ -364,8 +368,8 @@ function createLegend() {
             .text(item.label);
     });
 
-    
+    // Dodajte stilove kako bi se elementi prikazali jedan pored drugog
     legend.selectAll(".legend-item")
         .style("display", "inline-block")
-        .style("margin-right", "10px"); 
+        .style("margin-right", "10px"); // Možete prilagoditi razmak između elemenata prema potrebi
 }
