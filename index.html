@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Global Emissions Map</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            font-family: Arial, sans-serif;
+        }
+
+        #map {
+            flex: 1;
+            margin-right: 20px;
+            border: 1px solid #000; /* Dodavanje bordera oko mape */
+        }
+
+        #mapHolder {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #info {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+        }
+
+        #charts {
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+            margin-top: 20px; /* Dodano za centriranje */
+        }
+
+        #pieLegend {
+            margin-top: 10px;
+        }
+
+        #pieContainer {
+            display: flex;
+            flex-direction: row; /* Postavljanje pie chart-a i legende jedno pored drugog */
+            align-items: left; /* Centriranje sadržaja u pieContainer-u */
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Poravnanje legende uz lijevi rub */
+            margin-left: 10px; /* Dodavanje razmaka između pie chart-a i legende */
+        }
+
+        #playButton {
+            margin-bottom: 10px;
+            display: block; /* Osiguravanje da dugme zauzima ceo red */
+            margin-left: left;
+
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #playButton:hover {
+            background-color: #45a049;
+        }
+
+        #yearSlider {
+            display: block;
+            margin-left: left;
+
+        }
+
+        #lineChartDropdown {
+            display: block;
+            margin-left: left;
+            width: 200px; /* Smanjivanje širine dropdown-a */
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div id="mapHolder">
+        <h2>CO2 Emissions by Country</h2>
+        <div id="map">
+            
+        </div>
+        <div id="legend"></div>
+    </div>
+    <div id="info">
+        <button id="playButton">Play</button>
+        <input type="range" min="2000" max="2021" value="2021" id="yearSlider">
+        <h3 id="currentYear">Year: 2021</h3>
+        <h3 id="countryName">Country: </h3>
+        <h3 id="totalEmissions">Total Emissions: </h3>
+        <div id="charts">
+            <div id="pieContainer" class="chart-container">
+                <svg id="pieChart" width="200" height="200"></svg>
+                <div id="pieLegend" class="legend"></div>
+            </div>
+            <select id="lineChartDropdown">
+                <option value="total">Total Emissions</option>
+                <option value="coal">Coal</option>
+                <option value="oil">Oil</option>
+                <option value="gas">Gas</option>
+                <option value="cement">Cement</option>
+                <option value="flaring">Flaring</option>
+                <option value="other">Other</option>
+            </select>
+            <svg id="lineChart" width="450" height="250"></svg>
+        </div>
+    </div>
+    <script src="map.js"></script>
+</body>
+</html>
